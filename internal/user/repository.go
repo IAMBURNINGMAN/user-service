@@ -1,4 +1,4 @@
-package UsersService
+package user
 
 import "gorm.io/gorm"
 
@@ -14,28 +14,28 @@ type userRepository struct {
 	db *gorm.DB
 }
 
-func (u userRepository) CreateUser(user *UserStruct) error {
-	return u.db.Create(user).Error
+func (r *userRepository) CreateUser(user *UserStruct) error {
+	return r.db.Create(user).Error
 }
 
-func (u userRepository) GetAllUsers() ([]UserStruct, error) {
+func (r *userRepository) GetAllUsers() ([]UserStruct, error) {
 	var users []UserStruct
-	err := u.db.Find(&users).Error
+	err := r.db.Find(&users).Error
 	return users, err
 }
 
-func (u userRepository) GetUserById(id uint) (UserStruct, error) {
+func (r *userRepository) GetUserById(id uint) (UserStruct, error) {
 	var thatUser UserStruct
-	err := u.db.First(&thatUser, id).Error
+	err := r.db.First(&thatUser, id).Error
 	return thatUser, err
 }
 
-func (u userRepository) UpdateUser(user *UserStruct) error {
-	return u.db.Save(user).Error
+func (r *userRepository) UpdateUser(user *UserStruct) error {
+	return r.db.Save(user).Error
 }
 
-func (u userRepository) DeleteUser(id uint) error {
-	return u.db.Delete(&UserStruct{}, id).Error
+func (r *userRepository) DeleteUser(id uint) error {
+	return r.db.Delete(&UserStruct{}, id).Error
 }
 
 func NewUserRepository(db *gorm.DB) UserRepository {

@@ -1,4 +1,4 @@
-package UsersService
+package user
 
 type UserService interface {
 	CreateUser(user UserStruct) (UserStruct, error)
@@ -12,27 +12,27 @@ type userService struct {
 	repo UserRepository
 }
 
-func (u userService) CreateUser(user UserStruct) (UserStruct, error) {
-	newuser := UserStruct{
+func (s *userService) CreateUser(user UserStruct) (UserStruct, error) {
+	newUser := UserStruct{
 		Email:    user.Email,
 		Password: user.Password,
 	}
-	if err := u.repo.CreateUser(&newuser); err != nil {
+	if err := s.repo.CreateUser(&newUser); err != nil {
 		return UserStruct{}, err
 	}
-	return newuser, nil
+	return newUser, nil
 }
 
-func (u userService) GetAllUsers() ([]UserStruct, error) {
-	return u.repo.GetAllUsers()
+func (s *userService) GetAllUsers() ([]UserStruct, error) {
+	return s.repo.GetAllUsers()
 }
 
-func (u userService) GetUserById(id uint) (UserStruct, error) {
-	return u.repo.GetUserById(id)
+func (s *userService) GetUserById(id uint) (UserStruct, error) {
+	return s.repo.GetUserById(id)
 }
 
-func (u userService) UpdateUser(id uint, user UserStruct) (UserStruct, error) {
-	existingUser, err := u.repo.GetUserById(id)
+func (s *userService) UpdateUser(id uint, user UserStruct) (UserStruct, error) {
+	existingUser, err := s.repo.GetUserById(id)
 	if err != nil {
 		return UserStruct{}, err
 	}
@@ -42,14 +42,16 @@ func (u userService) UpdateUser(id uint, user UserStruct) (UserStruct, error) {
 	if user.Password != "" {
 		existingUser.Password = user.Password
 	}
-	if err := u.repo.UpdateUser(&existingUser); err != nil {
+	if err := s.repo.UpdateUser(&existingUser); err != nil {
 		return UserStruct{}, err
 	}
 	return existingUser, nil
 }
 
-func (u userService) DeleteUser(id uint) error {
-	return u.repo.DeleteUser(id)
+func (s *userService) DeleteUser(id uint) error {
+	return s.repo.DeleteUser(id)
 }
 
-func NewUserService(r UserRepository) UserService { return &userService{repo: r} }
+func NewUserService(r UserRepository) UserService {
+	return &userService{repo: r}
+}
